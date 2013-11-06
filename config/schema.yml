@@ -1,0 +1,108 @@
+propel:
+  _attributes:
+    package: lib.model
+    defaultIdMethod: native
+  alumno:
+    _attributes: { phpName: Alumno, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    persona_id: { phpName: PersonaId, type: INTEGER, required: true, foreignTable: persona, foreignReference: id, onDelete: CASCADE, onUpdate: CASCADE }
+    estado_alumno_id: { phpName: EstadoAlumnoId, type: INTEGER, required: true, foreignTable: estado_alumno, foreignReference: id }
+    _indexes: { persona_id: [persona_id], estado_alumno_id: [estado_alumno_id] }
+  aula:
+    _attributes: { phpName: Aula, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion_aula: { phpName: DescripcionAula, type: VARCHAR, size: '30', required: true, index: unique }
+  cargo:
+    _attributes: { phpName: Cargo, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion_cargo: { phpName: DescripcionCargo, type: VARCHAR, size: '10', required: true, index: unique }
+  carrera:
+    _attributes: { phpName: Carrera, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    nombre_carrera: { phpName: NombreCarrera, type: VARCHAR, size: '30', required: true }
+  carrera_has_alumno:
+    _attributes: { phpName: CarreraHasAlumno, idMethod: native }
+    carrera_id: { phpName: CarreraId, type: INTEGER, primaryKey: true, required: true, defaultValue: '0', foreignTable: carrera, foreignReference: id }
+    alumno_id: { phpName: AlumnoId, type: INTEGER, primaryKey: true, required: true, foreignTable: alumno, foreignReference: id, onDelete: CASCADE, onUpdate: CASCADE }
+    _indexes: { fk_carrera_has_alumno_alumno1_idx: [alumno_id], fk_carrera_has_alumno_carrera1_idx: [carrera_id] }
+  comision:
+    _attributes: { phpName: Comision, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion_comision: { phpName: DescripcionComision, type: VARCHAR, size: '30', required: true }
+    materia_id: { phpName: MateriaId, type: INTEGER, required: true, foreignTable: materia, foreignReference: id }
+    aula_id: { phpName: AulaId, type: INTEGER, required: true, foreignTable: aula, foreignReference: id }
+    profesor_id: { phpName: ProfesorId, type: INTEGER, required: true, foreignTable: profesor, foreignReference: id, onDelete: CASCADE, onUpdate: CASCADE }
+    _indexes: { fk_comision_profesor: [profesor_id], fk_comision_materia: [materia_id], fk_comision_aula: [aula_id] }
+  elemento:
+    _attributes: { phpName: Elemento, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion: { phpName: Descripcion, type: VARCHAR, size: '50', required: true }
+    disponible: { phpName: Disponible, type: BOOLEAN, size: '1', required: true }
+    numero_inventario: { phpName: NumeroInventario, type: VARCHAR, size: '50', required: true, index: unique }
+    solo_udc: { phpName: SoloUdc, type: BOOLEAN, size: '1', required: true }
+  elemento_en_uso:
+    _attributes: { phpName: ElementoEnUso, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, required: true, defaultValue: '0' }
+    hora_fecha_retiro: { phpName: HoraFechaRetiro, type: TIMESTAMP, required: false }
+    hora_fecha_entrega: { phpName: HoraFechaEntrega, type: TIMESTAMP, required: false }
+    elemento_id: { phpName: ElementoId, type: INTEGER, required: true, foreignTable: elemento, foreignReference: id }
+    persona_id: { phpName: PersonaId, type: INTEGER, required: true, foreignTable: persona, foreignReference: id }
+    _indexes: { fk_elemento_en_uso_elemento1_idx: [elemento_id], fk_elemento_en_uso_persona1_idx: [persona_id] }
+  estado_alumno:
+    _attributes: { phpName: EstadoAlumno, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion: { phpName: Descripcion, type: VARCHAR, size: '30', required: true, index: unique }
+  fichaje:
+    _attributes: { phpName: Fichaje, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    fecha_hora_entrada: { phpName: FechaHoraEntrada, type: TIMESTAMP, required: false, defaultExpr: CURRENT_TIMESTAMP }
+    fecha_hora_salida: { phpName: FechaHoraSalida, type: TIMESTAMP, required: false }
+    observacion: { phpName: Observacion, type: VARCHAR, size: '140', required: true }
+    comision_id: { phpName: ComisionId, type: INTEGER, required: true, foreignTable: comision, foreignReference: id }
+    _indexes: { fk_fichaje_comision_id: [comision_id] }
+  materia:
+    _attributes: { phpName: Materia, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    nombre_materia: { phpName: NombreMateria, type: VARCHAR, size: '30', required: true }
+    fecha_inicio_cursada: { phpName: FechaInicioCursada, type: DATE, required: true }
+    fecha_fin_cursada: { phpName: FechaFinCursada, type: DATE, required: true }
+    carrera_id: { phpName: CarreraId, type: INTEGER, required: true, foreignTable: carrera, foreignReference: id }
+    _indexes: { fk_materia_carrera1_idx: [carrera_id] }
+  persona:
+    _attributes: { phpName: Persona, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    nro_doc: { phpName: NroDoc, type: VARCHAR, size: '10', required: true }
+    ape_nom: { phpName: ApeNom, type: VARCHAR, size: '100', required: true, index: unique }
+    direccion: { phpName: Direccion, type: VARCHAR, size: '100', required: true }
+    fecha_nac: { phpName: FechaNac, type: DATE, required: true }
+    email: { phpName: Email, type: VARCHAR, size: '100', required: false, index: unique }
+    sexo_id: { phpName: SexoId, type: INTEGER, required: true, foreignTable: sexo, foreignReference: id }
+    tipo_doc_id: { phpName: TipoDocId, type: INTEGER, required: true, foreignTable: tipo_doc, foreignReference: id }
+    _indexes: { fk_persona_tipo_doc: [tipo_doc_id], fk_persona_sexo: [sexo_id] }
+    _uniques: { nro_doc_UNIQUE: [nro_doc, tipo_doc_id] }
+  profesor:
+    _attributes: { phpName: Profesor, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    cargo_id: { phpName: CargoId, type: INTEGER, required: true, foreignTable: cargo, foreignReference: id, onDelete: CASCADE, onUpdate: CASCADE }
+    persona_id: { phpName: PersonaId, type: INTEGER, required: true, foreignTable: persona, foreignReference: id }
+    _indexes: { fk_profesor_cargo: [cargo_id], fk_profesor_persona: [persona_id] }
+  sexo:
+    _attributes: { phpName: Sexo, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion_sexo: { phpName: DescripcionSexo, type: VARCHAR, size: '10', required: false, index: unique }
+  temas_dados:
+    _attributes: { phpName: TemasDados, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    fecha_hora: { phpName: FechaHora, type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    tema: { phpName: Tema, type: VARCHAR, size: '100', required: true }
+    comision_id: { phpName: ComisionId, type: INTEGER, required: true, foreignTable: comision, foreignReference: id }
+    _indexes: { fk_temas_dados_comision: [comision_id] }
+  tipo_doc:
+    _attributes: { phpName: TipoDoc, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    descripcion: { phpName: Descripcion, type: VARCHAR, size: '10', required: true, index: unique }
+  usuario:
+    _attributes: { phpName: Usuario, idMethod: native }
+    id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    user: { phpName: User, type: VARCHAR, size: '50', required: true, index: unique }
+    password: { phpName: Password, type: VARCHAR, size: '15', required: true, index: unique }
