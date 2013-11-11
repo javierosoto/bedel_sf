@@ -1,6 +1,6 @@
-<h1>Personas List</h1>
+<h1>Personas Lista</h1>
 
-<table>
+<table class="table table-bordered">
   <thead>
     <tr>
       <th>Id</th>
